@@ -7,9 +7,9 @@ import { SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
 import { listSchema, type ListFormValues } from '../../schemas/listSchema'
 import { useUpdateList, useDeleteList } from '../../hooks/useLists'
-import { CardItem } from './CardItem'
-import { CreateCardForm } from './CreateCardForm'
-import { listSortableId, cardSortableId, emptyDroppableId } from './dndIds'
+import { CardItem } from '../card/CardItem'
+import { CreateCardForm } from '../card/CreateCardForm'
+import { listSortableId, cardSortableId, emptyDroppableId } from '../board/dndIds'
 import type { ListWithCards } from '../../api/boards'
 
 type Props = {

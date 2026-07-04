@@ -2,7 +2,7 @@ import { useSetAtom } from 'jotai'
 import { useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
 import { selectedCardIdAtom } from '../../atoms/cardAtoms'
-import { cardSortableId } from './dndIds'
+import { cardSortableId } from '../board/dndIds'
 import type { CardSummary } from '../../api/boards'
 
 type Props = {
