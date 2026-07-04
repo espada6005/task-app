@@ -1,0 +1,48 @@
+spring:
+  application:
+    name: task-app
+
+  datasource:
+    url: jdbc:postgresql://localhost:5432/taskdb
+    username: dev_user
+    password: pass
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    show-sql: true
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: true
+
+  flyway:
+    locations: classpath:db/migration
+    baseline-on-migrate: true
+
+  data:
+    redis:
+      host: localhost
+      port: 6379
+
+  session:
+    store-type: redis
+    redis:
+      namespace: task-app:session
+    timeout: 3600s
+
+  servlet:
+    multipart:
+      max-file-size: 5MB
+      max-request-size: 10MB
+
+server:
+  port: 8080
+
+app:
+  upload:
+    dir: ${UPLOAD_DIR:./uploads}
+  jwt:
+    secret: ${JWT_SECRET:local-dev-secret-key-must-be-at-least-256-bits-long-padding}
+    expiration-seconds: 3600
