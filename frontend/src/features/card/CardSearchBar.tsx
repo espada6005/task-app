@@ -1,30 +1,30 @@
-import { useEffect, useState } from 'react'
-import { useSetAtom } from 'jotai'
-import { selectedCardIdAtom } from '../../atoms/cardAtoms'
-import { useSearchCards } from '../../hooks/useCards'
+import { useEffect, useState } from 'react';
+import { useSetAtom } from 'jotai';
+import { selectedCardIdAtom } from '../../atoms/cardAtoms';
+import { useSearchCards } from '../../hooks/useCards';
 
 type Props = {
-  boardId: number
-}
+  boardId: number;
+};
 
 function isOverdue(dueDate: string | null) {
-  if (!dueDate) return false
-  return new Date(dueDate) < new Date(new Date().toDateString())
+  if (!dueDate) return false;
+  return new Date(dueDate) < new Date(new Date().toDateString());
 }
 
 export function CardSearchBar({ boardId }: Props) {
-  const [title, setTitle] = useState('')
-  const [debouncedTitle, setDebouncedTitle] = useState('')
-  const [dueDateBefore, setDueDateBefore] = useState('')
-  const [overdue, setOverdue] = useState(false)
-  const setSelectedCardId = useSetAtom(selectedCardIdAtom)
+  const [title, setTitle] = useState('');
+  const [debouncedTitle, setDebouncedTitle] = useState('');
+  const [dueDateBefore, setDueDateBefore] = useState('');
+  const [overdue, setOverdue] = useState(false);
+  const setSelectedCardId = useSetAtom(selectedCardIdAtom);
 
   useEffect(() => {
-    const timer = setTimeout(() => setDebouncedTitle(title.trim()), 300)
-    return () => clearTimeout(timer)
-  }, [title])
+    const timer = setTimeout(() => setDebouncedTitle(title.trim()), 300);
+    return () => clearTimeout(timer);
+  }, [title]);
 
-  const hasFilter = debouncedTitle !== '' || dueDateBefore !== '' || overdue
+  const hasFilter = debouncedTitle !== '' || dueDateBefore !== '' || overdue;
 
   const { data: results, isFetching } = useSearchCards(
     boardId,
@@ -34,13 +34,13 @@ export function CardSearchBar({ boardId }: Props) {
       overdue: overdue || undefined,
     },
     hasFilter
-  )
+  );
 
   const handleClear = () => {
-    setTitle('')
-    setDueDateBefore('')
-    setOverdue(false)
-  }
+    setTitle('');
+    setDueDateBefore('');
+    setOverdue(false);
+  };
 
   return (
     <div className="relative">
@@ -105,5 +105,5 @@ export function CardSearchBar({ boardId }: Props) {
         </div>
       )}
     </div>
-  )
+  );
 }

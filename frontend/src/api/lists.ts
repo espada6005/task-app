@@ -1,18 +1,18 @@
-import apiClient from './client'
+import apiClient from './client';
 
 export type TaskListResponse = {
-    id: number
-    boardId: number
-    title: string
-    position: number
-    createdAt: string
-    updatedAt: string
-}
+    id: number;
+    boardId: number;
+    title: string;
+    position: number;
+    createdAt: string;
+    updatedAt: string;
+};
 
 export type ListOrderItem = {
-    id: number
-    position: number
-}
+    id: number;
+    position: number;
+};
 
 export const listsApi = {
     create: (boardId: number, title: string) =>
@@ -26,4 +26,4 @@ export const listsApi = {
 
     reorder: (boardId: number, lists: ListOrderItem[]) =>
         apiClient.patch('/lists/reorder', { boardId, lists }),
-}
+};

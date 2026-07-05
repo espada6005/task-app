@@ -1,18 +1,18 @@
-import { useState } from 'react'
-import { useBoards } from '../../hooks/useBoards'
-import { BoardCard } from './BoardCard'
-import { CreateBoardForm } from './CreateBoardForm'
+import { useState } from 'react';
+import { useBoards } from '../../hooks/useBoards';
+import { BoardCard } from './BoardCard';
+import { CreateBoardForm } from './CreateBoardForm';
 
 export function BoardListPage() {
-  const [showCreateForm, setShowCreateForm] = useState(false)
-  const { data: boards, isLoading, isError } = useBoards()
+  const [showCreateForm, setShowCreateForm] = useState(false);
+  const { data: boards, isLoading, isError } = useBoards();
 
   if (isLoading) {
     return (
       <div className="flex items-center justify-center h-64 text-gray-400">
         読み込み中...
       </div>
-    )
+    );
   }
 
   if (isError) {
@@ -20,7 +20,7 @@ export function BoardListPage() {
       <div className="flex items-center justify-center h-64 text-red-500">
         データの取得に失敗しました
       </div>
-    )
+    );
   }
 
   return (
@@ -61,5 +61,5 @@ export function BoardListPage() {
         <CreateBoardForm onClose={() => setShowCreateForm(false)} />
       )}
     </div>
-  )
+  );
 }

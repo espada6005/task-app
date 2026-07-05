@@ -1,29 +1,29 @@
-import { useState } from 'react'
-import { useForm } from 'react-hook-form'
-import { zodResolver } from '@hookform/resolvers/zod'
-import { listSchema, type ListFormValues } from '../../schemas/listSchema'
-import { useCreateList } from '../../hooks/useLists'
+import { useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { listSchema, type ListFormValues } from '../../schemas/listSchema';
+import { useCreateList } from '../../hooks/useLists';
 
 type Props = {
-  boardId: number
-}
+  boardId: number;
+};
 
 export function CreateListForm({ boardId }: Props) {
-  const [isOpen, setIsOpen] = useState(false)
-  const createList = useCreateList(boardId)
+  const [isOpen, setIsOpen] = useState(false);
+  const createList = useCreateList(boardId);
 
   const { register, handleSubmit, reset, formState: { errors } } = useForm<ListFormValues>({
     resolver: zodResolver(listSchema),
-  })
+  });
 
   const onSubmit = (values: ListFormValues) => {
     createList.mutate(values.title, {
       onSuccess: () => {
-        reset()
-        setIsOpen(false)
+        reset();
+        setIsOpen(false);
       },
-    })
-  }
+    });
+  };
 
   if (!isOpen) {
     return (
@@ -33,7 +33,7 @@ export function CreateListForm({ boardId }: Props) {
       >
         + リストを追加
       </button>
-    )
+    );
   }
 
   return (
@@ -46,8 +46,8 @@ export function CreateListForm({ boardId }: Props) {
           className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
           onKeyDown={(e) => {
             if (e.key === 'Escape') {
-              setIsOpen(false)
-              reset()
+              setIsOpen(false);
+              reset();
             }
           }}
         />
@@ -63,8 +63,8 @@ export function CreateListForm({ boardId }: Props) {
           <button
             type="button"
             onClick={() => {
-              setIsOpen(false)
-              reset()
+              setIsOpen(false);
+              reset();
             }}
             className="px-3 py-1.5 text-sm text-gray-600 hover:text-gray-800"
           >
@@ -73,5 +73,5 @@ export function CreateListForm({ boardId }: Props) {
         </div>
       </form>
     </div>
-  )
+  );
 }

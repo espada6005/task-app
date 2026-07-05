@@ -1,32 +1,32 @@
-import { useState } from 'react'
-import { useForm } from 'react-hook-form'
-import { zodResolver } from '@hookform/resolvers/zod'
-import { cardCreateSchema, type CardCreateFormValues } from '../../schemas/cardSchema'
-import { useCreateCard } from '../../hooks/useCards'
+import { useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { cardCreateSchema, type CardCreateFormValues } from '../../schemas/cardSchema';
+import { useCreateCard } from '../../hooks/useCards';
 
 type Props = {
-  boardId: number
-  listId: number
-}
+  boardId: number;
+  listId: number;
+};
 
 export function CreateCardForm({ boardId, listId }: Props) {
-  const [isOpen, setIsOpen] = useState(false)
-  const createCard = useCreateCard(boardId)
+  const [isOpen, setIsOpen] = useState(false);
+  const createCard = useCreateCard(boardId);
 
   const { register, handleSubmit, reset, formState: { errors } } = useForm<CardCreateFormValues>({
     resolver: zodResolver(cardCreateSchema),
-  })
+  });
 
   const onSubmit = (values: CardCreateFormValues) => {
     createCard.mutate(
       { listId, title: values.title },
       {
         onSuccess: () => {
-          reset()
+          reset();
         },
       }
-    )
-  }
+    );
+  };
 
   if (!isOpen) {
     return (
@@ -36,7 +36,7 @@ export function CreateCardForm({ boardId, listId }: Props) {
       >
         + カードを追加
       </button>
-    )
+    );
   }
 
   return (
@@ -49,12 +49,12 @@ export function CreateCardForm({ boardId, listId }: Props) {
         className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm resize-none focus:outline-none focus:ring-2 focus:ring-blue-500"
         onKeyDown={(e) => {
           if (e.key === 'Enter' && !e.shiftKey) {
-            e.preventDefault()
-            handleSubmit(onSubmit)()
+            e.preventDefault();
+            handleSubmit(onSubmit)();
           }
           if (e.key === 'Escape') {
-            setIsOpen(false)
-            reset()
+            setIsOpen(false);
+            reset();
           }
         }}
       />
@@ -70,8 +70,8 @@ export function CreateCardForm({ boardId, listId }: Props) {
         <button
           type="button"
           onClick={() => {
-            setIsOpen(false)
-            reset()
+            setIsOpen(false);
+            reset();
           }}
           className="px-3 py-1.5 text-sm text-gray-600 hover:text-gray-800"
         >
@@ -79,5 +79,5 @@ export function CreateCardForm({ boardId, listId }: Props) {
         </button>
       </div>
     </form>
-  )
+  );
 }

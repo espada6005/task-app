@@ -1,25 +1,25 @@
-import { useForm } from 'react-hook-form'
-import { zodResolver } from '@hookform/resolvers/zod'
-import { boardSchema, type BoardFormValues } from '../../schemas/boardSchema'
-import { useCreateBoard } from '../../hooks/useBoards'
-import { Modal } from '../../components/Modal'
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { boardSchema, type BoardFormValues } from '../../schemas/boardSchema';
+import { useCreateBoard } from '../../hooks/useBoards';
+import { Modal } from '../../components/Modal';
 
 type Props = {
-  onClose: () => void
-}
+  onClose: () => void;
+};
 
 export function CreateBoardForm({ onClose }: Props) {
-  const createBoard = useCreateBoard()
+  const createBoard = useCreateBoard();
 
   const { register, handleSubmit, formState: { errors } } = useForm<BoardFormValues>({
     resolver: zodResolver(boardSchema),
-  })
+  });
 
   const onSubmit = (values: BoardFormValues) => {
     createBoard.mutate(values.title, {
       onSuccess: onClose,
-    })
-  }
+    });
+  };
 
   return (
     <Modal onClose={onClose}>
@@ -52,5 +52,5 @@ export function CreateBoardForm({ onClose }: Props) {
         </div>
       </form>
     </Modal>
-  )
+  );
 }

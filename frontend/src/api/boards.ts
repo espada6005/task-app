@@ -1,30 +1,30 @@
-import apiClient from './client'
+import apiClient from './client';
 
 export type BoardResponse = {
-    id: number
-    title: string
-    createdAt: string
-    updatedAt: string
-}
+    id: number;
+    title: string;
+    createdAt: string;
+    updatedAt: string;
+};
 
 export type CardSummary = {
-    id: number
-    title: string
-    description: string | null
-    position: number
-    dueDate: string | null
-}
+    id: number;
+    title: string;
+    description: string | null;
+    position: number;
+    dueDate: string | null;
+};
 
 export type ListWithCards = {
-    id: number
-    title: string
-    position: number
-    cards: CardSummary[]
-}
+    id: number;
+    title: string;
+    position: number;
+    cards: CardSummary[];
+};
 
 export type BoardDetailResponse = BoardResponse & {
-    lists: ListWithCards[]
-}
+    lists: ListWithCards[];
+};
 
 export const boardsApi = {
     getAll: () =>
@@ -41,4 +41,4 @@ export const boardsApi = {
 
     delete: (boardId: number) =>
         apiClient.delete(`/boards/${boardId}`),
-}
+};

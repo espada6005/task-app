@@ -1,4 +1,4 @@
-import axios from 'axios'
+import axios from 'axios';
 
 const apiClient = axios.create({
     baseURL: '/api',
@@ -6,17 +6,17 @@ const apiClient = axios.create({
     headers: {
         'Content-Type': 'application/json',
     },
-})
+});
 
 // 401が返ったらログイン画面へリダイレクト
 apiClient.interceptors.response.use(
     (response) => response,
     (error) => {
         if (error.response?.status === 401) {
-            window.location.href = '/login'
+            window.location.href = '/login';
         }
-        return Promise.reject(error)
+        return Promise.reject(error);
     }
-)
+);
 
-export default apiClient
+export default apiClient;

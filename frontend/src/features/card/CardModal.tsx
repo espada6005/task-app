@@ -1,25 +1,25 @@
-import { useEffect } from 'react'
-import { useAtom } from 'jotai'
-import { useForm } from 'react-hook-form'
-import { zodResolver } from '@hookform/resolvers/zod'
-import { selectedCardIdAtom } from '../../atoms/cardAtoms'
-import { cardDetailSchema, type CardDetailFormValues } from '../../schemas/cardSchema'
-import { useCard, useUpdateCard, useDeleteCard } from '../../hooks/useCards'
-import { Modal } from '../../components/Modal'
+import { useEffect } from 'react';
+import { useAtom } from 'jotai';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { selectedCardIdAtom } from '../../atoms/cardAtoms';
+import { cardDetailSchema, type CardDetailFormValues } from '../../schemas/cardSchema';
+import { useCard, useUpdateCard, useDeleteCard } from '../../hooks/useCards';
+import { Modal } from '../../components/Modal';
 
 type Props = {
-  boardId: number
-}
+  boardId: number;
+};
 
 export function CardModal({ boardId }: Props) {
-  const [selectedCardId, setSelectedCardId] = useAtom(selectedCardIdAtom)
-  const { data: card, isLoading } = useCard(selectedCardId)
-  const updateCard = useUpdateCard(boardId)
-  const deleteCard = useDeleteCard(boardId)
+  const [selectedCardId, setSelectedCardId] = useAtom(selectedCardIdAtom);
+  const { data: card, isLoading } = useCard(selectedCardId);
+  const updateCard = useUpdateCard(boardId);
+  const deleteCard = useDeleteCard(boardId);
 
   const { register, handleSubmit, reset, formState: { errors, isDirty } } = useForm<CardDetailFormValues>({
     resolver: zodResolver(cardDetailSchema),
-  })
+  });
 
   useEffect(() => {
     if (card) {
@@ -27,13 +27,13 @@ export function CardModal({ boardId }: Props) {
         title: card.title,
         description: card.description ?? '',
         dueDate: card.dueDate ?? '',
-      })
+      });
     }
-  }, [card, reset])
+  }, [card, reset]);
 
-  if (selectedCardId === null) return null
+  if (selectedCardId === null) return null;
 
-  const handleClose = () => setSelectedCardId(null)
+  const handleClose = () => setSelectedCardId(null);
 
   const onSubmit = (values: CardDetailFormValues) => {
     updateCard.mutate({
@@ -43,14 +43,14 @@ export function CardModal({ boardId }: Props) {
         description: values.description ? values.description : null,
         dueDate: values.dueDate ? values.dueDate : null,
       },
-    })
-  }
+    });
+  };
 
   const handleDelete = () => {
     if (confirm('このカードを削除しますか？')) {
-      deleteCard.mutate(selectedCardId, { onSuccess: handleClose })
+      deleteCard.mutate(selectedCardId, { onSuccess: handleClose });
     }
-  }
+  };
 
   return (
     <Modal onClose={handleClose} maxWidthClassName="max-w-lg" className="max-h-[85vh] overflow-y-auto">
@@ -124,5 +124,5 @@ export function CardModal({ boardId }: Props) {
         </form>
       )}
     </Modal>
-  )
+  );
 }

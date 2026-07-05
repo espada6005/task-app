@@ -1,18 +1,18 @@
-import apiClient from './client'
+import apiClient from './client';
 
 export type UserResponse = {
-    id: number
-    username: string
-    email: string
-    totpEnabled: boolean
-    createdAt: string
-}
+    id: number;
+    username: string;
+    email: string;
+    totpEnabled: boolean;
+    createdAt: string;
+};
 
 export type RegisterRequest = {
-    username: string
-    email: string
-    password: string
-}
+    username: string;
+    email: string;
+    password: string;
+};
 
 export const authApi = {
     register: (data: RegisterRequest) =>
@@ -20,4 +20,4 @@ export const authApi = {
 
     me: () =>
         apiClient.get<UserResponse>('/auth/me').then((r) => r.data),
-}
+};

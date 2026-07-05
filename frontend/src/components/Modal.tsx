@@ -1,9 +1,9 @@
 type Props = {
-  onClose: () => void
-  children: React.ReactNode
-  maxWidthClassName?: string
-  className?: string
-}
+  onClose: () => void;
+  children: React.ReactNode;
+  maxWidthClassName?: string;
+  className?: string;
+};
 
 export function Modal({ onClose, children, maxWidthClassName = 'max-w-sm', className = '' }: Props) {
   return (
@@ -15,5 +15,5 @@ export function Modal({ onClose, children, maxWidthClassName = 'max-w-sm', class
         {children}
       </div>
     </div>
-  )
+  );
 }

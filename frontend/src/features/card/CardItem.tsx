@@ -1,24 +1,24 @@
-import { useSetAtom } from 'jotai'
-import { useSortable } from '@dnd-kit/sortable'
-import { CSS } from '@dnd-kit/utilities'
-import { selectedCardIdAtom } from '../../atoms/cardAtoms'
-import { cardSortableId } from '../board/dndIds'
-import type { CardSummary } from '../../api/boards'
+import { useSetAtom } from 'jotai';
+import { useSortable } from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
+import { selectedCardIdAtom } from '../../atoms/cardAtoms';
+import { cardSortableId } from '../../dnd/ids';
+import type { CardSummary } from '../../api/boards';
 
 type Props = {
-  card: CardSummary
-  listId: number
-}
+  card: CardSummary;
+  listId: number;
+};
 
 function isOverdue(dueDate: string | null) {
-  if (!dueDate) return false
-  return new Date(dueDate) < new Date(new Date().toDateString())
+  if (!dueDate) return false;
+  return new Date(dueDate) < new Date(new Date().toDateString());
 }
 
 type ContentProps = {
-  card: CardSummary
-  onClick?: () => void
-}
+  card: CardSummary;
+  onClick?: () => void;
+};
 
 export function CardContent({ card, onClick }: ContentProps) {
   return (
@@ -37,26 +37,26 @@ export function CardContent({ card, onClick }: ContentProps) {
         </p>
       )}
     </div>
-  )
+  );
 }
 
 export function CardItem({ card, listId }: Props) {
-  const setSelectedCardId = useSetAtom(selectedCardIdAtom)
+  const setSelectedCardId = useSetAtom(selectedCardIdAtom);
 
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
     id: cardSortableId(card.id),
     data: { type: 'card', cardId: card.id, listId },
-  })
+  });
 
   const style = {
     transform: CSS.Transform.toString(transform),
     transition,
     opacity: isDragging ? 0.4 : 1,
-  }
+  };
 
   return (
     <div ref={setNodeRef} style={style} {...attributes} {...listeners}>
       <CardContent card={card} onClick={() => setSelectedCardId(card.id)} />
     </div>
-  )
+  );
 }
