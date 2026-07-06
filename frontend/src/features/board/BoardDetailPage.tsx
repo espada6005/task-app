@@ -1,5 +1,6 @@
-import { useEffect, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
+import { useQueryClient } from '@tanstack/react-query';
 import {
   DndContext,
   DragOverlay,
@@ -12,7 +13,7 @@ import {
   type DragStartEvent,
 } from '@dnd-kit/core';
 import { SortableContext, arrayMove, horizontalListSortingStrategy } from '@dnd-kit/sortable';
-import { useBoardDetail } from '../../hooks/useBoards';
+import { useBoardDetail, boardKeys } from '../../hooks/useBoards';
 import { useReorderLists } from '../../hooks/useLists';
 import { useReorderCards } from '../../hooks/useCards';
 import { ListColumn } from '../list/ListColumn';
@@ -33,20 +34,13 @@ function sortBoard(board: BoardDetailResponse): ListWithCards[] {
 export function BoardDetailPage() {
   const { boardId } = useParams<{ boardId: string }>();
   const id = Number(boardId);
+  const queryClient = useQueryClient();
   const { data: board, isLoading, isError } = useBoardDetail(id);
   const reorderLists = useReorderLists(id);
   const reorderCards = useReorderCards(id);
 
-  const [localLists, setLocalLists] = useState<ListWithCards[]>([]);
   const [activeCard, setActiveCard] = useState<CardSummary | null>(null);
   const dragStartListIdRef = useRef<number | null>(null);
-  const isDraggingRef = useRef(false);
-
-  useEffect(() => {
-    if (board && !isDraggingRef.current) {
-      setLocalLists(sortBoard(board));
-    }
-  }, [board]);
 
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 5 } })
@@ -66,8 +60,18 @@ export function BoardDetailPage() {
     );
   }
 
+  const localLists = sortBoard(board);
+
+  function updateLists(updater: (lists: ListWithCards[]) => ListWithCards[]) {
+    queryClient.setQueryData<BoardDetailResponse>(boardKeys.detail(id), (prev) => {
+      if (!prev) return prev;
+      return { ...prev, lists: updater(sortBoard(prev)) };
+    });
+  }
+
   function handleDragStart(event: DragStartEvent) {
-    isDraggingRef.current = true;
+    // ドラッグ中にバックグラウンドの再取得が割り込んでプレビューを壊さないようにする
+    queryClient.cancelQueries({ queryKey: boardKeys.detail(id) });
     const { active } = event;
     if (active.data.current?.type === 'card') {
       const listId = active.data.current.listId as number;
@@ -95,7 +99,7 @@ export function BoardDetailPage() {
     }
     if (overListId === undefined || overListId === activeListId) return;
 
-    setLocalLists((prev) => {
+    updateLists((prev) => {
       const activeList = prev.find((l) => l.id === activeListId);
       const overList = prev.find((l) => l.id === overListId);
       if (!activeList || !overList) return prev;
@@ -122,7 +126,6 @@ export function BoardDetailPage() {
   }
 
   function handleDragEnd(event: DragEndEvent) {
-    isDraggingRef.current = false;
     setActiveCard(null);
     const { active, over } = event;
     if (!over) return;
@@ -133,7 +136,7 @@ export function BoardDetailPage() {
       const newIndex = localLists.findIndex((l) => listSortableId(l.id) === over.id);
       if (oldIndex === -1 || newIndex === -1) return;
       const newOrder = arrayMove(localLists, oldIndex, newIndex);
-      setLocalLists(newOrder);
+      updateLists(() => newOrder);
       reorderLists.mutate(newOrder.map((l, i) => ({ id: l.id, position: i })));
       return;
     }
@@ -158,9 +161,13 @@ export function BoardDetailPage() {
         }
       }
 
-      const newLists = [...localLists];
-      newLists[listIdx] = { ...list, cards: reorderedCards };
-      setLocalLists(newLists);
+      updateLists((prev) => {
+        const idx = prev.findIndex((l) => l.id === finalListId);
+        if (idx === -1) return prev;
+        const next = [...prev];
+        next[idx] = { ...next[idx], cards: reorderedCards };
+        return next;
+      });
 
       const orderItems: CardOrderItem[] = reorderedCards.map((c, i) => ({
         id: c.id,
